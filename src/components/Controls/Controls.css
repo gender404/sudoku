@@ -1,0 +1,36 @@
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  width: min(92vw, 640px);
+}
+
+.controls__field {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  gap: 2px;
+}
+
+.controls select,
+.controls button {
+  font: inherit;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--cell-bg);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.controls__timer {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.1rem;
+}
+
+.controls__complete {
+  font-weight: 700;
+  color: #2e7d32;
+}

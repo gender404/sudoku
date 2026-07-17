@@ -1,0 +1,47 @@
+.board {
+  display: grid;
+  grid-template-columns: repeat(var(--size), 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 2px solid var(--border);
+  width: min(92vw, 640px);
+  aspect-ratio: 1 / 1;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cell-bg);
+  color: var(--entry-text);
+  border: none;
+  font: inherit;
+  font-size: clamp(0.5rem, calc(400px / var(--size)), 1.5rem);
+  cursor: pointer;
+  padding: 0;
+  min-width: 0;
+}
+
+.cell--given {
+  font-weight: 700;
+  color: var(--text);
+  background: var(--cell-given-bg);
+  cursor: default;
+}
+
+.cell--selected {
+  background: var(--cell-selected-bg);
+}
+
+.cell--conflict {
+  color: var(--cell-conflict-text);
+  background: var(--cell-conflict-bg);
+}
+
+.cell--box-right {
+  border-right: 2px solid var(--border);
+}
+
+.cell--box-bottom {
+  border-bottom: 2px solid var(--border);
+}

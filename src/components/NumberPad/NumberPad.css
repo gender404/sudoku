@@ -1,0 +1,31 @@
+.number-pad {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(2.25rem, 1fr));
+  gap: 6px;
+  width: min(92vw, 640px);
+}
+
+.number-pad__button {
+  padding: 10px 0;
+  font: inherit;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--cell-bg);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.number-pad__button:hover:not(:disabled) {
+  background: var(--cell-selected-bg);
+}
+
+.number-pad__button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.number-pad__button--clear {
+  grid-column: span 2;
+  font-weight: 600;
+}
