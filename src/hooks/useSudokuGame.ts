@@ -102,20 +102,32 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
 
   const clearCell = useCallback(() => setValue(0), [setValue])
 
-  const selectCell = useCallback((row: number, col: number) => {
-    setHighlightedValue(null)
-    setSelected((prev) => (prev && prev[0] === row && prev[1] === col ? null : [row, col]))
+  const toggleHighlight = useCallback((value: number) => {
+    setHighlightedValue((prev) => (prev === value ? null : value))
   }, [])
+
+  const selectCell = useCallback(
+    (row: number, col: number) => {
+      if (given[row][col]) {
+        setSelected(null)
+        toggleHighlight(state.values[row][col])
+        return
+      }
+      setHighlightedValue(null)
+      setSelected((prev) => (prev && prev[0] === row && prev[1] === col ? null : [row, col]))
+    },
+    [given, state.values, toggleHighlight],
+  )
 
   const pressNumber = useCallback(
     (value: number) => {
       if (selected) {
         setValue(value)
       } else {
-        setHighlightedValue((prev) => (prev === value ? null : value))
+        toggleHighlight(value)
       }
     },
-    [selected, setValue],
+    [selected, setValue, toggleHighlight],
   )
 
   const newGame = useCallback(

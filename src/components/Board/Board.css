@@ -31,7 +31,6 @@
   font-weight: 700;
   color: var(--text);
   background: var(--cell-given-bg);
-  cursor: default;
 }
 
 .cell--entry {
