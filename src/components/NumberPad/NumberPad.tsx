@@ -2,12 +2,21 @@ import './NumberPad.css'
 
 interface NumberPadProps {
   size: number
-  disabled: boolean
+  numbersDisabled: boolean
+  clearDisabled: boolean
+  highlightedValue: number | null
   onEnter: (value: number) => void
   onClear: () => void
 }
 
-export function NumberPad({ size, disabled, onEnter, onClear }: NumberPadProps) {
+export function NumberPad({
+  size,
+  numbersDisabled,
+  clearDisabled,
+  highlightedValue,
+  onEnter,
+  onClear,
+}: NumberPadProps) {
   const numbers = Array.from({ length: size }, (_, i) => i + 1)
 
   return (
@@ -16,9 +25,11 @@ export function NumberPad({ size, disabled, onEnter, onClear }: NumberPadProps) 
         <button
           key={n}
           type="button"
-          className="number-pad__button"
+          className={
+            'number-pad__button' + (n === highlightedValue ? ' number-pad__button--active' : '')
+          }
           onClick={() => onEnter(n)}
-          disabled={disabled}
+          disabled={numbersDisabled}
         >
           {n}
         </button>
@@ -27,7 +38,7 @@ export function NumberPad({ size, disabled, onEnter, onClear }: NumberPadProps) 
         type="button"
         className="number-pad__button number-pad__button--clear"
         onClick={onClear}
-        disabled={disabled}
+        disabled={clearDisabled}
       >
         Clear
       </button>

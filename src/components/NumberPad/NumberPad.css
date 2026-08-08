@@ -25,6 +25,11 @@
   cursor: default;
 }
 
+.number-pad__button--active {
+  background: var(--cell-highlight-bg);
+  border-color: var(--text);
+}
+
 .number-pad__button--clear {
   grid-column: span 2;
   font-weight: 600;

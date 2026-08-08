@@ -5,6 +5,7 @@
   --cell-bg: #fff;
   --cell-given-bg: #f0f0f0;
   --cell-selected-bg: #cfe3ff;
+  --cell-highlight-bg: #fff2b3;
   --cell-conflict-bg: #ffe0de;
   --cell-conflict-text: #c62828;
   --entry-text: #1a56db;
@@ -24,6 +25,7 @@
     --cell-bg: #1f2028;
     --cell-given-bg: #2a2b34;
     --cell-selected-bg: #2c3e63;
+    --cell-highlight-bg: #4a3f14;
     --cell-conflict-bg: #4a1f1f;
     --cell-conflict-text: #ff8a80;
     --entry-text: #7fa8ff;

@@ -12,6 +12,8 @@ export interface TypeSudokuGame {
   difficulty: Difficulty
   selected: [number, number] | null
   selectCell: (row: number, col: number) => void
+  highlightedValue: number | null
+  pressNumber: (value: number) => void
   setValue: (value: number) => void
   clearCell: () => void
   newGame: (difficulty: Difficulty) => void
@@ -62,6 +64,7 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
     () => loadGame(gridSize) ?? createGame(gridSize, 'medium'),
   )
   const [selected, setSelected] = useState<[number, number] | null>(null)
+  const [highlightedValue, setHighlightedValue] = useState<number | null>(null)
 
   useEffect(() => {
     localStorage.setItem(storageKey(gridSize), JSON.stringify(state))
@@ -100,13 +103,26 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
   const clearCell = useCallback(() => setValue(0), [setValue])
 
   const selectCell = useCallback((row: number, col: number) => {
+    setHighlightedValue(null)
     setSelected((prev) => (prev && prev[0] === row && prev[1] === col ? null : [row, col]))
   }, [])
+
+  const pressNumber = useCallback(
+    (value: number) => {
+      if (selected) {
+        setValue(value)
+      } else {
+        setHighlightedValue((prev) => (prev === value ? null : value))
+      }
+    },
+    [selected, setValue],
+  )
 
   const newGame = useCallback(
     (difficulty: Difficulty) => {
       setState(createGame(gridSize, difficulty))
       setSelected(null)
+      setHighlightedValue(null)
     },
     [gridSize],
   )
@@ -118,6 +134,7 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
       elapsedMs: 0,
     }))
     setSelected(null)
+    setHighlightedValue(null)
   }, [])
 
   return {
@@ -127,6 +144,8 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
     difficulty: state.difficulty,
     selected,
     selectCell,
+    highlightedValue,
+    pressNumber,
     setValue,
     clearCell,
     newGame,

@@ -7,11 +7,20 @@ interface BoardProps {
   given: boolean[][]
   conflicts: boolean[][]
   selected: [number, number] | null
+  highlightedValue: number | null
   boxDims: BoxDims
   onSelect: (row: number, col: number) => void
 }
 
-export function Board({ values, given, conflicts, selected, boxDims, onSelect }: BoardProps) {
+export function Board({
+  values,
+  given,
+  conflicts,
+  selected,
+  highlightedValue,
+  boxDims,
+  onSelect,
+}: BoardProps) {
   const size = values.length
 
   return (
@@ -23,6 +32,7 @@ export function Board({ values, given, conflicts, selected, boxDims, onSelect }:
             'cell',
             given[r][c] ? 'cell--given' : 'cell--entry',
             isSelected && 'cell--selected',
+            value !== 0 && value === highlightedValue && 'cell--highlighted',
             conflicts[r][c] && 'cell--conflict',
             (c + 1) % boxDims.w === 0 && c !== size - 1 && 'cell--box-right',
             (r + 1) % boxDims.h === 0 && r !== size - 1 && 'cell--box-bottom',
