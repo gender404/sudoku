@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { GridSizeKey } from './engine/types'
-import { useSudokuGame } from './hooks/useSudokuGame'
+import { useSudokuGame, type TypeSudokuGame } from './hooks/useSudokuGame'
 import { Board } from './components/Board/Board'
 import { NumberPad } from './components/NumberPad/NumberPad'
 import { Controls } from './components/Controls/Controls'
@@ -19,14 +19,15 @@ interface GameScreenProps {
 }
 
 function GameScreen({ gridSize, onGridSizeChange }: GameScreenProps) {
-  const game = useSudokuGame(gridSize)
+  const game: TypeSudokuGame = useSudokuGame(gridSize)
 
   return (
     <div className="game">
       <Controls
         gridSize={gridSize}
         difficulty={game.difficulty}
-        elapsedSeconds={game.elapsedSeconds}
+        elapsedMs={game.elapsedMs}
+        onPersistElapsed={game.setElapsedMs}
         complete={game.complete}
         onGridSizeChange={onGridSizeChange}
         onNewGame={game.newGame}

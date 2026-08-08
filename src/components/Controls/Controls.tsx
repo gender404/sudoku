@@ -1,11 +1,13 @@
 import type { Difficulty, GridSizeKey } from '../../engine/types'
 import { GRID_CONFIGS } from '../../engine/types'
+import { useElapsedTimer } from '../../hooks/useElapsedTimer'
 import './Controls.css'
 
 interface ControlsProps {
   gridSize: GridSizeKey
   difficulty: Difficulty
-  elapsedSeconds: number
+  elapsedMs: number
+  onPersistElapsed: (ms: number) => void
   complete: boolean
   onGridSizeChange: (size: GridSizeKey) => void
   onNewGame: (difficulty: Difficulty) => void
@@ -21,12 +23,15 @@ function formatTime(totalSeconds: number): string {
 export function Controls({
   gridSize,
   difficulty,
-  elapsedSeconds,
+  elapsedMs,
+  onPersistElapsed,
   complete,
   onGridSizeChange,
   onNewGame,
   onReset,
 }: ControlsProps) {
+  const elapsedSeconds = useElapsedTimer(elapsedMs, onPersistElapsed, complete)
+
   return (
     <div className="controls">
       <label className="controls__field">

@@ -1,15 +1,33 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { Difficulty, Grid, GridSizeKey } from '../engine/types'
+import type { BoxDims, Difficulty, Grid, GridSizeKey } from '../engine/types'
 import { GRID_CONFIGS } from '../engine/types'
 import { generateSolvedGrid } from '../engine/generate'
 import { carvePuzzle } from '../engine/carve'
 import { findConflicts, isGridComplete } from '../engine/validate'
 
+export interface TypeSudokuGame {
+  values: Grid
+  given: boolean[][]
+  conflicts: boolean[][]
+  difficulty: Difficulty
+  selected: [number, number] | null
+  selectCell: (row: number, col: number) => void
+  setValue: (value: number) => void
+  clearCell: () => void
+  newGame: (difficulty: Difficulty) => void
+  resetProgress: () => void
+  complete: boolean
+  elapsedMs: number
+  setElapsedMs: (ms: number) => void
+  size: number
+  boxDims: BoxDims
+}
+
 interface PersistedState {
   puzzle: Grid
   values: Grid
   difficulty: Difficulty
-  startedAt: number
+  elapsedMs: number
 }
 
 function storageKey(gridSize: GridSizeKey): string {
@@ -24,7 +42,7 @@ function createGame(gridSize: GridSizeKey, difficulty: Difficulty): PersistedSta
     puzzle,
     values: puzzle.map((row) => [...row]),
     difficulty,
-    startedAt: Date.now(),
+    elapsedMs: 0,
   }
 }
 
@@ -38,26 +56,20 @@ function loadGame(gridSize: GridSizeKey): PersistedState | null {
   }
 }
 
-export function useSudokuGame(gridSize: GridSizeKey) {
+export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
   const boxDims = GRID_CONFIGS[gridSize].boxDims
   const [state, setState] = useState<PersistedState>(
     () => loadGame(gridSize) ?? createGame(gridSize, 'medium'),
   )
   const [selected, setSelected] = useState<[number, number] | null>(null)
-  const [elapsedSeconds, setElapsedSeconds] = useState(() =>
-    Math.floor((Date.now() - state.startedAt) / 1000),
-  )
 
   useEffect(() => {
     localStorage.setItem(storageKey(gridSize), JSON.stringify(state))
   }, [gridSize, state])
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      setElapsedSeconds(Math.floor((Date.now() - state.startedAt) / 1000))
-    }, 1000)
-    return () => clearInterval(id)
-  }, [state.startedAt])
+  const setElapsedMs = useCallback((ms: number) => {
+    setState((prev) => ({ ...prev, elapsedMs: ms }))
+  }, [])
 
   const given = useMemo(
     () => state.puzzle.map((row) => row.map((value) => value !== 0)),
@@ -99,7 +111,7 @@ export function useSudokuGame(gridSize: GridSizeKey) {
     setState((prev) => ({
       ...prev,
       values: prev.puzzle.map((row) => [...row]),
-      startedAt: Date.now(),
+      elapsedMs: 0,
     }))
     setSelected(null)
   }, [])
@@ -116,7 +128,8 @@ export function useSudokuGame(gridSize: GridSizeKey) {
     newGame,
     resetProgress,
     complete,
-    elapsedSeconds,
+    elapsedMs: state.elapsedMs ?? 0,
+    setElapsedMs,
     size: boxDims.w * boxDims.h,
     boxDims,
   }
