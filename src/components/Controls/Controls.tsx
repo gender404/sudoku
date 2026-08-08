@@ -39,6 +39,7 @@ export function Controls({
   }, [elapsedMs])
 
   const elapsedSeconds = useElapsedTimer(elapsedMs, onPersistElapsed, complete || manuallyPaused)
+  const timerText = (manuallyPaused ? '⏸ ' : '') + formatTime(elapsedSeconds)
 
   return (
     <div className="controls">
@@ -78,10 +79,9 @@ export function Controls({
         onClick={() => setManuallyPaused((prev) => !prev)}
         disabled={complete}
         aria-pressed={manuallyPaused}
-        aria-label={manuallyPaused ? 'Resume timer' : 'Pause timer'}
+        aria-label={`Pause timer - ${timerText}`}
       >
-        {manuallyPaused ? '⏸ ' : ''}
-        {formatTime(elapsedSeconds)}
+        {timerText}
       </button>
       {complete && <span className="controls__complete">Solved!</span>}
     </div>
