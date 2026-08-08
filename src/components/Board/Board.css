@@ -13,6 +13,7 @@
 }
 
 .cell {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,6 +34,10 @@
   cursor: default;
 }
 
+.cell--entry {
+  font-style: italic;
+}
+
 .cell--highlighted {
   background: var(--cell-highlight-bg);
 }
@@ -44,6 +49,19 @@
 .cell--conflict {
   color: var(--cell-conflict-text);
   background: var(--cell-conflict-bg);
+}
+
+.cell--conflict-active::after {
+  content: '\2715';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6em;
+  font-weight: 700;
+  color: var(--cell-conflict-mark);
+  pointer-events: none;
 }
 
 .cell--box-right {

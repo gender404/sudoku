@@ -34,6 +34,7 @@ export function Board({
             isSelected && 'cell--selected',
             value !== 0 && value === highlightedValue && 'cell--highlighted',
             conflicts[r][c] && 'cell--conflict',
+            isSelected && conflicts[r][c] && 'cell--conflict-active',
             (c + 1) % boxDims.w === 0 && c !== size - 1 && 'cell--box-right',
             (r + 1) % boxDims.h === 0 && r !== size - 1 && 'cell--box-bottom',
           ]
