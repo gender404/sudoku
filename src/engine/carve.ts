@@ -23,8 +23,10 @@ function shuffledIndices(count: number): number[] {
  * Removes clues from a solved grid down to a difficulty-based target.
  * For grids at or below UNIQUENESS_CHECK_SIZE_LIMIT (9x9), each removal is
  * re-checked with countSolutions to guarantee a unique solution. Larger
- * grids (25x25) skip that check and use a more generous clue floor instead —
- * a documented gap, not a silent one (see plan's "out of scope" section).
+ * grids (16x16, 25x25) skip that check and use a more generous clue floor
+ * instead — a documented gap, not a silent one. Measured directly: forcing
+ * the check on for 16x16 didn't finish generating a single easy puzzle
+ * within two minutes, versus ~milliseconds with the check skipped.
  */
 export function carvePuzzle(solved: Grid, boxDims: BoxDims, difficulty: Difficulty): Grid {
   const size = boxDims.w * boxDims.h

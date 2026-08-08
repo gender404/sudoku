@@ -1,17 +1,17 @@
 # Sudoku
 
-A sudoku app for two grid sizes: standard 9x9 and a 25x25 variant, built with
+A sudoku app for three grid sizes: standard 9x9, 16x16, and 25x25, built with
 Vite + React + TypeScript. No backend — each puzzle plays entirely on-device,
-with progress saved to `localStorage` separately per grid size, so a 9x9 game
-and a 25x25 game never collide even on the same device.
+with progress saved to `localStorage` separately per grid size, so games at
+different sizes never collide even on the same device.
 
 Wrapped with [Capacitor](https://capacitorjs.com/) so the same web build also
 installs as a native iOS app.
 
 ## Engine (`src/engine/`)
 
-Framework-agnostic TypeScript, generic over box dimensions so 9x9 (3x3 boxes)
-and 25x25 (5x5 boxes) share one implementation:
+Framework-agnostic TypeScript, generic over box dimensions so 9x9 (3x3 boxes),
+16x16 (4x4 boxes), and 25x25 (5x5 boxes) share one implementation:
 
 - `generate.ts` — builds a solved grid via band/stack shuffling (no
   backtracking needed, so it's instant even at 625 cells).
@@ -19,10 +19,12 @@ and 25x25 (5x5 boxes) share one implementation:
   `countSolutions`, used as a uniqueness check.
 - `carve.ts` — removes clues down to a difficulty target. For 9x9, every
   removal is re-verified with `countSolutions` to guarantee a unique solution.
-  **For 25x25 this uniqueness check is skipped** — re-solving a
-  300+-empty-cell 25x25 grid is combinatorially expensive with only
-  row/col/box masking (no advanced constraint propagation), so the first pass
-  just uses a more generous clue floor instead. A documented gap, not a
+  **For 16x16 and 25x25 this uniqueness check is skipped** — re-solving a
+  sparser grid at those sizes is combinatorially expensive with only
+  row/col/box masking (no advanced constraint propagation), so those sizes
+  just use a more generous clue floor instead. Measured, not assumed: forcing
+  the check on for 16x16 didn't finish generating a single easy puzzle within
+  two minutes, versus milliseconds with it skipped. A documented gap, not a
   silent one — the app itself never calls the solver during play, only while
   building a fresh puzzle, so this doesn't affect runtime performance.
 - `validate.ts` — row/col/box conflict detection for live highlighting.

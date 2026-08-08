@@ -32,6 +32,7 @@ function assertValidSolvedGrid(grid: number[][], boxDims: BoxDims) {
 
 describe.each([
   ['9x9', GRID_CONFIGS['9x9'].boxDims],
+  ['16x16', GRID_CONFIGS['16x16'].boxDims],
   ['25x25', GRID_CONFIGS['25x25'].boxDims],
 ])('%s grid', (_label, boxDims) => {
   it('generates a valid solved grid', () => {
@@ -61,10 +62,10 @@ describe.each([
   })
 })
 
-// Full backtracking solve/uniqueness checks only run against 9x9. At 25x25, a carved puzzle
-// can have 300+ empty cells with only row/col/box masking (no advanced constraint propagation),
-// which is combinatorially expensive to fully re-solve — the plan documents this as a known
-// gap for the first pass (carving skips the uniqueness check there), not something to test here.
+// Full backtracking solve/uniqueness checks only run against 9x9. At 16x16 and 25x25, a carved
+// puzzle can have well over 100 empty cells with only row/col/box masking (no advanced constraint
+// propagation), which is combinatorially expensive to fully re-solve — measured directly for
+// 16x16 (see carve.ts), and documented as a known gap for the first pass, not something to test here.
 describe('9x9 solve + uniqueness', () => {
   it('solver re-solves a carved 9x9 puzzle back to a valid grid', () => {
     const boxDims = GRID_CONFIGS['9x9'].boxDims

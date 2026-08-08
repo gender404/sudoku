@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { GridSizeKey } from './engine/types'
+import { GRID_CONFIGS } from './engine/types'
 import { useSudokuGame, type TypeSudokuGame } from './hooks/useSudokuGame'
 import { Board } from './components/Board/Board'
 import { NumberPad } from './components/NumberPad/NumberPad'
@@ -8,9 +9,13 @@ import './App.css'
 
 const LAST_GRID_SIZE_KEY = 'sudoku:last-grid-size'
 
+function isGridSizeKey(value: string | null): value is GridSizeKey {
+  return value !== null && value in GRID_CONFIGS
+}
+
 function loadLastGridSize(): GridSizeKey {
   const stored = localStorage.getItem(LAST_GRID_SIZE_KEY)
-  return stored === '9x9' || stored === '25x25' ? stored : '9x9'
+  return isGridSizeKey(stored) ? stored : '9x9'
 }
 
 interface GameScreenProps {
