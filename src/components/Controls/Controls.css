@@ -38,10 +38,25 @@
   background-repeat: no-repeat;
 }
 
-.controls__timer {
-  margin-left: auto;
+.controls .controls__timer {
+  font: inherit;
   font-variant-numeric: tabular-nums;
   font-size: 1.1rem;
+  margin-left: auto;
+  border: none;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.controls .controls__timer:disabled {
+  cursor: default;
+}
+
+.controls .controls__timer--paused {
+  opacity: 0.55;
 }
 
 .controls__complete {

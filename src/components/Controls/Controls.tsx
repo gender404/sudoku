@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import type { Difficulty, GridSizeKey } from '../../engine/types'
 import { GRID_CONFIGS } from '../../engine/types'
 import { useElapsedTimer } from '../../hooks/useElapsedTimer'
@@ -30,7 +31,14 @@ export function Controls({
   onNewGame,
   onReset,
 }: ControlsProps) {
-  const elapsedSeconds = useElapsedTimer(elapsedMs, onPersistElapsed, complete)
+  const [manuallyPaused, setManuallyPaused] = useState(false)
+
+  // A fresh puzzle (new game or reset) always starts unpaused, even if the previous one was left paused.
+  useEffect(() => {
+    if (elapsedMs === 0) setManuallyPaused(false)
+  }, [elapsedMs])
+
+  const elapsedSeconds = useElapsedTimer(elapsedMs, onPersistElapsed, complete || manuallyPaused)
 
   return (
     <div className="controls">
@@ -64,7 +72,17 @@ export function Controls({
         Reset
       </button>
 
-      <span className="controls__timer">{formatTime(elapsedSeconds)}</span>
+      <button
+        type="button"
+        className={'controls__timer' + (manuallyPaused ? ' controls__timer--paused' : '')}
+        onClick={() => setManuallyPaused((prev) => !prev)}
+        disabled={complete}
+        aria-pressed={manuallyPaused}
+        aria-label={manuallyPaused ? 'Resume timer' : 'Pause timer'}
+      >
+        {manuallyPaused ? '⏸ ' : ''}
+        {formatTime(elapsedSeconds)}
+      </button>
       {complete && <span className="controls__complete">Solved!</span>}
     </div>
   )
