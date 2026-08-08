@@ -99,6 +99,10 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
 
   const clearCell = useCallback(() => setValue(0), [setValue])
 
+  const selectCell = useCallback((row: number, col: number) => {
+    setSelected((prev) => (prev && prev[0] === row && prev[1] === col ? null : [row, col]))
+  }, [])
+
   const newGame = useCallback(
     (difficulty: Difficulty) => {
       setState(createGame(gridSize, difficulty))
@@ -122,7 +126,7 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
     conflicts,
     difficulty: state.difficulty,
     selected,
-    selectCell: (row: number, col: number) => setSelected([row, col]),
+    selectCell,
     setValue,
     clearCell,
     newGame,
