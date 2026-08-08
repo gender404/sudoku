@@ -1,3 +1,5 @@
+import type { DisplayMode } from '../../engine/types'
+import { formatCellValue } from '../../engine/types'
 import './NumberPad.css'
 
 interface NumberPadProps {
@@ -5,6 +7,7 @@ interface NumberPadProps {
   numbersDisabled: boolean
   activeValues: number[]
   notesMode: boolean
+  displayMode: DisplayMode
   onEnter: (value: number) => void
   onToggleNotesMode: () => void
 }
@@ -14,6 +17,7 @@ export function NumberPad({
   numbersDisabled,
   activeValues,
   notesMode,
+  displayMode,
   onEnter,
   onToggleNotesMode,
 }: NumberPadProps) {
@@ -32,7 +36,7 @@ export function NumberPad({
           disabled={numbersDisabled}
           aria-pressed={activeValues.includes(n)}
         >
-          {n}
+          {formatCellValue(n, displayMode)}
         </button>
       ))}
       <button

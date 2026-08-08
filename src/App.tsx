@@ -25,6 +25,7 @@ interface GameScreenProps {
 
 function GameScreen({ gridSize, onGridSizeChange }: GameScreenProps) {
   const game: TypeSudokuGame = useSudokuGame(gridSize)
+  const displayMode = GRID_CONFIGS[gridSize].displayMode
   const selectedIsGiven = game.selected !== null && game.given[game.selected[0]][game.selected[1]]
   const selectedValue = game.selected ? game.values[game.selected[0]][game.selected[1]] : 0
   const activeValues = game.selected
@@ -55,6 +56,7 @@ function GameScreen({ gridSize, onGridSizeChange }: GameScreenProps) {
         selected={game.selected}
         highlightedValue={game.highlightedValue}
         boxDims={game.boxDims}
+        displayMode={displayMode}
         onSelect={game.selectCell}
       />
       <NumberPad
@@ -62,6 +64,7 @@ function GameScreen({ gridSize, onGridSizeChange }: GameScreenProps) {
         numbersDisabled={selectedIsGiven}
         activeValues={activeValues}
         notesMode={game.notesMode}
+        displayMode={displayMode}
         onEnter={game.pressNumber}
         onToggleNotesMode={game.toggleNotesMode}
       />

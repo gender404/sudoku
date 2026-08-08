@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
-import type { BoxDims, Grid } from '../../engine/types'
+import type { BoxDims, DisplayMode, Grid } from '../../engine/types'
+import { formatCellValue } from '../../engine/types'
 import './Board.css'
 
 interface BoardProps {
@@ -10,6 +11,7 @@ interface BoardProps {
   selected: [number, number] | null
   highlightedValue: number | null
   boxDims: BoxDims
+  displayMode: DisplayMode
   onSelect: (row: number, col: number) => void
 }
 
@@ -21,6 +23,7 @@ export function Board({
   selected,
   highlightedValue,
   boxDims,
+  displayMode,
   onSelect,
 }: BoardProps) {
   const size = values.length
@@ -53,14 +56,14 @@ export function Board({
               onClick={() => onSelect(r, c)}
             >
               {value !== 0 ? (
-                value
+                formatCellValue(value, displayMode)
               ) : cellNotes.length > 0 ? (
                 <span className="cell__notes">
                   {[...cellNotes]
                     .sort((a, b) => a - b)
                     .map((n) => (
                       <span key={n} className="cell__note">
-                        {n}
+                        {formatCellValue(n, displayMode)}
                       </span>
                     ))}
                 </span>
