@@ -50,6 +50,26 @@
   background: var(--cell-conflict-bg);
 }
 
+.cell__notes {
+  position: absolute;
+  inset: 2px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  font-size: 0.34em;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text);
+  opacity: 0.65;
+}
+
+.cell__note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .cell--conflict-active::after {
   content: '\2715';
   position: absolute;

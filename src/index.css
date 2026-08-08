@@ -10,6 +10,8 @@
   --cell-conflict-text: #c62828;
   --cell-conflict-mark: rgb(198 40 40 / 55%);
   --entry-text: #1a56db;
+  --notes-accent: #7c4dff;
+  --notes-accent-bg: #ede7f6;
 
   font: 16px/1.4 system-ui, 'Segoe UI', Roboto, sans-serif;
   color-scheme: light dark;
@@ -31,6 +33,8 @@
     --cell-conflict-text: #ff8a80;
     --cell-conflict-mark: rgb(255 138 128 / 55%);
     --entry-text: #7fa8ff;
+    --notes-accent: #b39ddb;
+    --notes-accent-bg: #362f52;
   }
 }
 

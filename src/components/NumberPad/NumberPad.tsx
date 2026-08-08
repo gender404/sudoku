@@ -3,44 +3,45 @@ import './NumberPad.css'
 interface NumberPadProps {
   size: number
   numbersDisabled: boolean
-  clearDisabled: boolean
-  highlightedValue: number | null
+  activeValues: number[]
+  notesMode: boolean
   onEnter: (value: number) => void
-  onClear: () => void
+  onToggleNotesMode: () => void
 }
 
 export function NumberPad({
   size,
   numbersDisabled,
-  clearDisabled,
-  highlightedValue,
+  activeValues,
+  notesMode,
   onEnter,
-  onClear,
+  onToggleNotesMode,
 }: NumberPadProps) {
   const numbers = Array.from({ length: size }, (_, i) => i + 1)
 
   return (
-    <div className="number-pad">
+    <div className={'number-pad' + (notesMode ? ' number-pad--notes-mode' : '')}>
       {numbers.map((n) => (
         <button
           key={n}
           type="button"
           className={
-            'number-pad__button' + (n === highlightedValue ? ' number-pad__button--active' : '')
+            'number-pad__button' + (activeValues.includes(n) ? ' number-pad__button--active' : '')
           }
           onClick={() => onEnter(n)}
           disabled={numbersDisabled}
+          aria-pressed={activeValues.includes(n)}
         >
           {n}
         </button>
       ))}
       <button
         type="button"
-        className="number-pad__button number-pad__button--clear"
-        onClick={onClear}
-        disabled={clearDisabled}
+        className="number-pad__button number-pad__button--notes"
+        onClick={onToggleNotesMode}
+        aria-pressed={notesMode}
       >
-        Clear
+        Notes
       </button>
     </div>
   )

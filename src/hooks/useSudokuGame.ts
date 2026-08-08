@@ -9,13 +9,15 @@ export interface TypeSudokuGame {
   values: Grid
   given: boolean[][]
   conflicts: boolean[][]
+  notes: number[][][]
   difficulty: Difficulty
   selected: [number, number] | null
   selectCell: (row: number, col: number) => void
   highlightedValue: number | null
+  notesMode: boolean
+  toggleNotesMode: () => void
   pressNumber: (value: number) => void
   setValue: (value: number) => void
-  clearCell: () => void
   newGame: (difficulty: Difficulty) => void
   resetProgress: () => void
   complete: boolean
@@ -28,12 +30,19 @@ export interface TypeSudokuGame {
 interface PersistedState {
   puzzle: Grid
   values: Grid
+  notes: number[][][]
   difficulty: Difficulty
   elapsedMs: number
 }
 
+const MAX_NOTES_PER_CELL = 4
+
 function storageKey(gridSize: GridSizeKey): string {
   return `sudoku:${gridSize}`
+}
+
+function emptyNotes(size: number): number[][][] {
+  return Array.from({ length: size }, () => Array.from({ length: size }, () => []))
 }
 
 function createGame(gridSize: GridSizeKey, difficulty: Difficulty): PersistedState {
@@ -43,6 +52,7 @@ function createGame(gridSize: GridSizeKey, difficulty: Difficulty): PersistedSta
   return {
     puzzle,
     values: puzzle.map((row) => [...row]),
+    notes: emptyNotes(boxDims.w * boxDims.h),
     difficulty,
     elapsedMs: 0,
   }
@@ -52,7 +62,8 @@ function loadGame(gridSize: GridSizeKey): PersistedState | null {
   const raw = localStorage.getItem(storageKey(gridSize))
   if (!raw) return null
   try {
-    return JSON.parse(raw) as PersistedState
+    const parsed = JSON.parse(raw) as PersistedState
+    return { ...parsed, notes: parsed.notes ?? emptyNotes(parsed.puzzle.length) }
   } catch {
     return null
   }
@@ -65,6 +76,7 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
   )
   const [selected, setSelected] = useState<[number, number] | null>(null)
   const [highlightedValue, setHighlightedValue] = useState<number | null>(null)
+  const [notesMode, setNotesMode] = useState(false)
 
   useEffect(() => {
     localStorage.setItem(storageKey(gridSize), JSON.stringify(state))
@@ -100,10 +112,25 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
     [selected, given],
   )
 
-  const clearCell = useCallback(() => setValue(0), [setValue])
-
   const toggleHighlight = useCallback((value: number) => {
     setHighlightedValue((prev) => (prev === value ? null : value))
+  }, [])
+
+  const toggleNotesMode = useCallback(() => setNotesMode((prev) => !prev), [])
+
+  const toggleNote = useCallback((row: number, col: number, value: number) => {
+    setState((prev) => {
+      const notes = prev.notes.map((r) => r.map((cell) => [...cell]))
+      const cellNotes = notes[row][col]
+      const idx = cellNotes.indexOf(value)
+      if (idx !== -1) {
+        cellNotes.splice(idx, 1)
+      } else {
+        if (cellNotes.length >= MAX_NOTES_PER_CELL) cellNotes.shift()
+        cellNotes.push(value)
+      }
+      return { ...prev, notes }
+    })
   }, [])
 
   const selectCell = useCallback(
@@ -123,12 +150,16 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
     (value: number) => {
       if (selected) {
         const [row, col] = selected
-        setValue(state.values[row][col] === value ? 0 : value)
+        if (notesMode && state.values[row][col] === 0) {
+          toggleNote(row, col, value)
+        } else {
+          setValue(state.values[row][col] === value ? 0 : value)
+        }
       } else {
         toggleHighlight(value)
       }
     },
-    [selected, setValue, toggleHighlight, state.values],
+    [selected, notesMode, setValue, toggleHighlight, toggleNote, state.values],
   )
 
   const newGame = useCallback(
@@ -136,6 +167,7 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
       setState(createGame(gridSize, difficulty))
       setSelected(null)
       setHighlightedValue(null)
+      setNotesMode(false)
     },
     [gridSize],
   )
@@ -144,23 +176,27 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
     setState((prev) => ({
       ...prev,
       values: prev.puzzle.map((row) => [...row]),
+      notes: emptyNotes(prev.puzzle.length),
       elapsedMs: 0,
     }))
     setSelected(null)
     setHighlightedValue(null)
+    setNotesMode(false)
   }, [])
 
   return {
     values: state.values,
     given,
     conflicts,
+    notes: state.notes,
     difficulty: state.difficulty,
     selected,
     selectCell,
     highlightedValue,
+    notesMode,
+    toggleNotesMode,
     pressNumber,
     setValue,
-    clearCell,
     newGame,
     resetProgress,
     complete,

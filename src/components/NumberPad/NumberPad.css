@@ -30,7 +30,18 @@
   border-color: var(--text);
 }
 
-.number-pad__button--clear {
+.number-pad__button--notes {
   grid-column: span 2;
   font-weight: 600;
+}
+
+.number-pad--notes-mode .number-pad__button:not(.number-pad__button--notes) {
+  border-color: var(--notes-accent);
+  border-width: 2px;
+}
+
+.number-pad--notes-mode .number-pad__button--notes {
+  background: var(--notes-accent-bg);
+  border-color: var(--notes-accent);
+  color: var(--notes-accent);
 }

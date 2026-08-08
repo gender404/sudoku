@@ -22,7 +22,13 @@ function GameScreen({ gridSize, onGridSizeChange }: GameScreenProps) {
   const game: TypeSudokuGame = useSudokuGame(gridSize)
   const selectedIsGiven = game.selected !== null && game.given[game.selected[0]][game.selected[1]]
   const selectedValue = game.selected ? game.values[game.selected[0]][game.selected[1]] : 0
-  const activeValue = game.highlightedValue ?? (selectedValue !== 0 ? selectedValue : null)
+  const activeValues = game.selected
+    ? selectedValue !== 0
+      ? [selectedValue]
+      : game.notes[game.selected[0]][game.selected[1]]
+    : game.highlightedValue !== null
+      ? [game.highlightedValue]
+      : []
 
   return (
     <div className="game">
@@ -40,6 +46,7 @@ function GameScreen({ gridSize, onGridSizeChange }: GameScreenProps) {
         values={game.values}
         given={game.given}
         conflicts={game.conflicts}
+        notes={game.notes}
         selected={game.selected}
         highlightedValue={game.highlightedValue}
         boxDims={game.boxDims}
@@ -48,10 +55,10 @@ function GameScreen({ gridSize, onGridSizeChange }: GameScreenProps) {
       <NumberPad
         size={game.size}
         numbersDisabled={selectedIsGiven}
-        clearDisabled={game.selected === null || selectedIsGiven}
-        highlightedValue={activeValue}
+        activeValues={activeValues}
+        notesMode={game.notesMode}
         onEnter={game.pressNumber}
-        onClear={game.clearCell}
+        onToggleNotesMode={game.toggleNotesMode}
       />
     </div>
   )

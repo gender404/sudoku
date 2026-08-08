@@ -6,6 +6,7 @@ interface BoardProps {
   values: Grid
   given: boolean[][]
   conflicts: boolean[][]
+  notes: number[][][]
   selected: [number, number] | null
   highlightedValue: number | null
   boxDims: BoxDims
@@ -16,6 +17,7 @@ export function Board({
   values,
   given,
   conflicts,
+  notes,
   selected,
   highlightedValue,
   boxDims,
@@ -41,6 +43,8 @@ export function Board({
             .filter(Boolean)
             .join(' ')
 
+          const cellNotes = notes[r][c]
+
           return (
             <button
               key={`${r}-${c}`}
@@ -48,7 +52,21 @@ export function Board({
               className={classNames}
               onClick={() => onSelect(r, c)}
             >
-              {value !== 0 ? value : ''}
+              {value !== 0 ? (
+                value
+              ) : cellNotes.length > 0 ? (
+                <span className="cell__notes">
+                  {[...cellNotes]
+                    .sort((a, b) => a - b)
+                    .map((n) => (
+                      <span key={n} className="cell__note">
+                        {n}
+                      </span>
+                    ))}
+                </span>
+              ) : (
+                ''
+              )}
             </button>
           )
         }),
