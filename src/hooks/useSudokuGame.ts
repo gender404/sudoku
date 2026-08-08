@@ -122,12 +122,13 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
   const pressNumber = useCallback(
     (value: number) => {
       if (selected) {
-        setValue(value)
+        const [row, col] = selected
+        setValue(state.values[row][col] === value ? 0 : value)
       } else {
         toggleHighlight(value)
       }
     },
-    [selected, setValue, toggleHighlight],
+    [selected, setValue, toggleHighlight, state.values],
   )
 
   const newGame = useCallback(

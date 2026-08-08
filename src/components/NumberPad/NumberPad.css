@@ -16,7 +16,7 @@
   cursor: pointer;
 }
 
-.number-pad__button:hover:not(:disabled) {
+.number-pad__button:hover:not(:disabled):not(.number-pad__button--active) {
   background: var(--cell-selected-bg);
 }
 

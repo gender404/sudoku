@@ -21,6 +21,8 @@ interface GameScreenProps {
 function GameScreen({ gridSize, onGridSizeChange }: GameScreenProps) {
   const game: TypeSudokuGame = useSudokuGame(gridSize)
   const selectedIsGiven = game.selected !== null && game.given[game.selected[0]][game.selected[1]]
+  const selectedValue = game.selected ? game.values[game.selected[0]][game.selected[1]] : 0
+  const activeValue = game.highlightedValue ?? (selectedValue !== 0 ? selectedValue : null)
 
   return (
     <div className="game">
@@ -47,7 +49,7 @@ function GameScreen({ gridSize, onGridSizeChange }: GameScreenProps) {
         size={game.size}
         numbersDisabled={selectedIsGiven}
         clearDisabled={game.selected === null || selectedIsGiven}
-        highlightedValue={game.highlightedValue}
+        highlightedValue={activeValue}
         onEnter={game.pressNumber}
         onClear={game.clearCell}
       />
