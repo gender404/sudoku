@@ -10,6 +10,7 @@ export interface TypeSudokuGame {
   given: boolean[][]
   conflicts: boolean[][]
   notes: number[][][]
+  filledValues: number[]
   difficulty: Difficulty
   selected: [number, number] | null
   selectCell: (row: number, col: number) => void
@@ -97,6 +98,22 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
     () => isGridComplete(state.values) && !conflicts.flat().some(Boolean),
     [state.values, conflicts],
   )
+
+  const size = boxDims.w * boxDims.h
+
+  const filledValues = useMemo(() => {
+    const counts = new Array(size + 1).fill(0)
+    for (const row of state.values) {
+      for (const value of row) {
+        if (value !== 0) counts[value]++
+      }
+    }
+    const result: number[] = []
+    for (let value = 1; value <= size; value++) {
+      if (counts[value] >= size) result.push(value)
+    }
+    return result
+  }, [state.values, size])
 
   const setValue = useCallback(
     (value: number) => {
@@ -189,6 +206,7 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
     given,
     conflicts,
     notes: state.notes,
+    filledValues,
     difficulty: state.difficulty,
     selected,
     selectCell,
@@ -202,7 +220,7 @@ export function useSudokuGame(gridSize: GridSizeKey): TypeSudokuGame {
     complete,
     elapsedMs: state.elapsedMs ?? 0,
     setElapsedMs,
-    size: boxDims.w * boxDims.h,
+    size,
     boxDims,
   }
 }

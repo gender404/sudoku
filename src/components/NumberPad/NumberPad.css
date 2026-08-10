@@ -30,6 +30,10 @@
   border-color: var(--text);
 }
 
+.number-pad__button--filled {
+  opacity: 0.4;
+}
+
 .number-pad__button--notes {
   grid-column: span 2;
   font-weight: 600;

@@ -63,6 +63,7 @@ function GameScreen({ gridSize, onGridSizeChange }: GameScreenProps) {
         size={game.size}
         numbersDisabled={selectedIsGiven}
         activeValues={activeValues}
+        filledValues={game.filledValues}
         notesMode={game.notesMode}
         displayMode={displayMode}
         onEnter={game.pressNumber}

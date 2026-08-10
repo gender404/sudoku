@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { useEffect, useState } from 'react'
 import type { Difficulty, GridSizeKey } from '../../engine/types'
 import { GRID_CONFIGS } from '../../engine/types'
@@ -75,7 +76,7 @@ export function Controls({
 
       <button
         type="button"
-        className={'controls__timer' + (manuallyPaused ? ' controls__timer--paused' : '')}
+        className={classNames('controls__timer', { 'controls__timer--paused': manuallyPaused })}
         onClick={() => setManuallyPaused((prev) => !prev)}
         disabled={complete}
         aria-pressed={manuallyPaused}
