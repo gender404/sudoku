@@ -27,7 +27,7 @@ export type GridSizeKey = keyof typeof GRID_CONFIGS
 export function formatCellValue(value: number, displayMode: DisplayMode): string {
   switch (displayMode) {
     case 'hex':
-      return (value - 1).toString(16).toUpperCase()
+      return value <= 9 ? String(value) : String.fromCharCode(64 + (value - 9))
     case 'alpha':
       return String.fromCharCode(64 + value)
     case 'number':
